@@ -1,0 +1,1460 @@
+/* ============================================================
+   ROUTEX TRANSIT — SCHEDULES MODULE STYLES
+   Matches existing dashboard, routes and users modules.
+   ============================================================ */
+
+:root {
+    --schedules-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --badge-scheduled-bg: rgba(79, 124, 255, 0.15);
+    --badge-scheduled-text: #1e3a8a;
+    --badge-inprogress-bg: rgba(245, 158, 11, 0.15);
+    --badge-inprogress-text: #92400e;
+    --badge-completed-bg: rgba(16, 185, 129, 0.15);
+    --badge-completed-text: #065f46;
+    --badge-cancelled-bg: rgba(239, 68, 68, 0.12);
+    --badge-cancelled-text: #991b1b;
+}
+
+/* ---------- GLOBAL BOX-SIZING ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ============================================================
+   SCROLLBAR FIX
+   ============================================================ */
+body {
+    display: block !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#mainWrapper {
+    min-height: unset !important;
+    height: auto !important;
+    overflow: visible !important;
+    overflow-x: clip !important;
+}
+
+/* ---------- SIDEBAR OVERLAY ---------- */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 98;
+    background: rgba(0, 0, 0, 0.25);
+    display: none;
+    cursor: pointer;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ---------- CONTENT AREA ---------- */
+.content {
+    overflow: visible;
+    overflow-x: clip;
+    min-width: 0;
+    padding: 1.5rem 2rem 2rem 2rem;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* ---------- TOPBAR ---------- */
+.topbar {
+    margin-right: 1rem !important;
+    min-height: 64px !important;
+    align-items: center !important;
+}
+
+.topbar .user-info {
+    min-width: 120px;
+    min-height: 40px;
+}
+
+/* ---------- PAGE HEADER ---------- */
+.schedules-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+    margin-top: 2rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-header-content {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    min-width: 0;
+}
+
+.page-header-icon {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, rgba(108, 34, 245, 0.15), rgba(66, 32, 230, 0.1));
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    box-shadow: var(--shadow-input);
+    flex-shrink: 0;
+}
+
+.page-header-icon svg {
+    width: 28px;
+    height: 28px;
+    stroke: currentColor;
+}
+
+.page-header-text h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2e0a8a, #6c22f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.page-header-text p {
+    color: var(--text-soft);
+    font-weight: 500;
+    margin: 0.25rem 0 0 0;
+    font-size: 1rem;
+}
+
+/* ---------- STATS GRID (KPI cards) ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(60px) saturate(240%);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: all var(--schedules-transition);
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 8px 8px 16px rgba(0, 0, 0, 0.15), inset -8px -8px 16px rgba(255, 255, 255, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.45), 0 6px 20px rgba(0, 0, 0, 0.06), 0 0 20px rgba(79, 124, 255, 0.25), 0 0 40px rgba(108, 34, 245, 0.1);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    padding: 2px;
+    background: linear-gradient(45deg, rgba(79, 124, 255, 0.6), rgba(108, 34, 245, 0.35), rgba(79, 124, 255, 0.6));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+.stat-card:hover::after {
+    opacity: 1;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #4f7cff, #6c22f5);
+    border-radius: 0 3px 3px 0;
+    opacity: 0.6;
+    box-shadow: 0 0 10px rgba(79, 124, 255, 0.5);
+}
+
+.stat-card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-soft);
+    display: flex;
+    align-items: center;
+    padding-left: 0.8rem;
+}
+
+.stat-card h3 svg {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    stroke: currentColor;
+}
+
+.stat-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2e0a8a, #6c22f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    padding-left: 0.8rem;
+}
+
+/* ---------- ACTION BAR ---------- */
+.action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.2rem 1.8rem;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: var(--border-subtle);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.action-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+    flex: 1;
+    min-width: 0;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+    max-width: 340px;
+    transition: all var(--schedules-transition);
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+    opacity: 0.7;
+    pointer-events: none;
+    transition: opacity var(--schedules-transition);
+}
+
+.search-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid transparent;
+    border-radius: 40px;
+    padding: 0.85rem 1.2rem 0.85rem 3rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-input);
+    transition: all var(--schedules-transition);
+    box-sizing: border-box;
+}
+
+.search-input::placeholder {
+    color: #8c8c9e;
+}
+
+.search-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(108, 34, 245, 0.45);
+    box-shadow: 0 0 0 4px rgba(108, 34, 245, 0.12), 0 0 24px rgba(108, 34, 245, 0.18), var(--shadow-input);
+}
+
+.search-clear {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    cursor: pointer;
+    color: var(--primary);
+    opacity: 0.6;
+    display: none;
+}
+
+.search-clear svg {
+    width: 100%;
+    height: 100%;
+}
+
+.filter-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.filter-select {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1.5px solid transparent;
+    border-radius: 40px;
+    padding: 0.85rem 2.2rem 0.85rem 1.3rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-input);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c22f5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 16px;
+    cursor: pointer;
+    min-width: 140px;
+    box-sizing: border-box;
+    transition: all var(--schedules-transition);
+}
+
+.filter-select:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.45);
+    border-color: rgba(108, 34, 245, 0.4);
+    box-shadow: 0 0 0 4px rgba(108, 34, 245, 0.1), var(--shadow-input);
+}
+
+.date-input {
+    padding: 0.85rem 1.3rem;
+}
+
+.action-bar-right {
+    flex-shrink: 0;
+}
+
+.add-schedule-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: linear-gradient(135deg, #6c22f5, #4220e6);
+    border: none;
+    border-radius: 40px;
+    padding: 0.9rem 1.8rem;
+    color: white;
+    font-weight: 600;
+    font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(108, 34, 245, 0.3);
+    transition: all var(--schedules-transition);
+    white-space: nowrap;
+}
+
+.add-schedule-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(108, 34, 245, 0.4);
+}
+
+.add-schedule-btn:active {
+    transform: scale(0.97);
+}
+
+.add-schedule-icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* ---------- ACTIVE FILTER TAGS ---------- */
+.active-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.3rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(108, 34, 245, 0.12);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 0.4rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    border: 1px solid rgba(108, 34, 245, 0.2);
+}
+
+.filter-tag-close {
+    background: transparent;
+    border: none;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.filter-tag-close:hover {
+    opacity: 1;
+}
+
+.filter-clear-all {
+    background: transparent;
+    border: none;
+    color: #e11d48;
+    font-weight: 600;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.4rem 1rem;
+    border-radius: 30px;
+    transition: background 0.2s;
+}
+
+.filter-clear-all:hover {
+    background: rgba(225, 29, 72, 0.08);
+}
+
+/* ---------- SCHEDULES TABLE SECTION ---------- */
+.schedules-table-section {
+    position: relative;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: var(--border-subtle);
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius-sm);
+    width: 100%;
+}
+
+/* ✅ Custom scrollbar for table wrapper */
+.table-responsive::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(108, 34, 245, 0.3);
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 34, 245, 0.6);
+}
+
+.schedules-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+    table-layout: auto;
+}
+
+.schedules-table thead th {
+    padding: 1rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-soft);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(108, 34, 245, 0.1);
+}
+
+.schedules-table tbody tr {
+    transition: background var(--schedules-transition);
+    border-bottom: 1px solid rgba(108, 34, 245, 0.05);
+}
+
+.schedules-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.schedules-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.schedules-table td {
+    padding: 1rem 1rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+
+.col-schedule-id {
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25em 0.9em;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+
+.status-badge.scheduled {
+    background: var(--badge-scheduled-bg);
+    color: var(--badge-scheduled-text);
+}
+
+.status-badge.in-progress {
+    background: var(--badge-inprogress-bg);
+    color: var(--badge-inprogress-text);
+}
+
+.status-badge.completed {
+    background: var(--badge-completed-bg);
+    color: var(--badge-completed-text);
+}
+
+.status-badge.cancelled {
+    background: var(--badge-cancelled-bg);
+    color: var(--badge-cancelled-text);
+}
+
+.actions-cell {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.action-icon-btn {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-soft);
+    cursor: pointer;
+    transition: all var(--schedules-transition);
+    box-shadow: var(--shadow-input);
+}
+
+.action-icon-btn:hover {
+    background: rgba(108, 34, 245, 0.2);
+    color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.action-icon-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ---------- SKELETON ---------- */
+.table-skeleton {
+    display: none;
+}
+
+.skeleton-header,
+.skeleton-row {
+    display: flex;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+}
+
+.skeleton-cell {
+    height: 16px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.2) 25%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.2) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-cell-sm {
+    width: 40px;
+}
+
+.skeleton-cell-md {
+    width: 100px;
+}
+
+.skeleton-cell-lg {
+    width: 150px;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ---------- EMPTY STATE ---------- */
+.empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 70px;
+    height: 70px;
+    background: rgba(108, 34, 245, 0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary);
+}
+
+.empty-state-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.empty-state h3 {
+    font-size: 1.3rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-soft);
+    margin-bottom: 1.5rem;
+}
+
+.empty-state-btn {
+    background: rgba(108, 34, 245, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(108, 34, 245, 0.2);
+    border-radius: 30px;
+    padding: 0.6rem 1.8rem;
+    font-weight: 600;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.results-info {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-weight: 500;
+    padding-left: 0.5rem;
+}
+
+/* ---------- MODAL (GENERAL) ---------- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1.5rem;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-container {
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(60px) saturate(250%);
+    -webkit-backdrop-filter: blur(60px) saturate(250%);
+    border-radius: 36px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.3), inset 1px 1px 2px rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    animation: modalSlideIn 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* ✅ Custom scrollbar for modal container */
+.modal-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-container::-webkit-scrollbar-thumb {
+    background: rgba(108, 34, 245, 0.3);
+    border-radius: 10px;
+}
+
+.modal-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(108, 34, 245, 0.6);
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+}
+
+.modal-header-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, rgba(108, 34, 245, 0.2), rgba(66, 32, 230, 0.15));
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+}
+
+.modal-header-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.modal-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2e0a8a, #6c22f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    flex: 1;
+}
+
+.modal-close-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dark);
+    cursor: pointer;
+    box-shadow: var(--shadow-input);
+}
+
+/* ---------- FORM ---------- */
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.form-label .required {
+    color: #e11d48;
+    margin-left: 2px;
+}
+
+.form-input-wrapper {
+    position: relative;
+}
+
+.form-input-icon {
+    position: absolute;
+    left: 1.1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--primary);
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1.2rem 1rem 2.8rem;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid transparent;
+    border-radius: 30px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500;
+    color: var(--text-dark);
+    box-shadow: var(--shadow-input);
+    transition: var(--schedules-transition);
+    box-sizing: border-box;
+}
+
+.form-input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(108, 34, 245, 0.4);
+    box-shadow: 0 0 0 4px rgba(108, 34, 245, 0.1), var(--shadow-input);
+}
+
+.form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c22f5' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+}
+
+.form-error {
+    font-size: 0.75rem;
+    color: #e11d48;
+    margin-top: 0.3rem;
+    display: none;
+    padding-left: 0.5rem;
+}
+
+/* ---------- MODAL ACTIONS ---------- */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    color: var(--text-dark);
+    cursor: pointer;
+    box-shadow: var(--shadow-input);
+}
+
+.btn-submit {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: linear-gradient(135deg, #6c22f5, #4220e6);
+    border: none;
+    padding: 0.9rem 2.2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(108, 34, 245, 0.35);
+    position: relative;
+}
+
+.btn-submit-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-submit .btn-spinner {
+    display: none;
+    position: absolute;
+    right: 1.2rem;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+.btn-submit.loading .btn-spinner {
+    display: block;
+}
+
+.btn-submit.loading .btn-submit-icon,
+.btn-submit.loading #scheduleSubmitBtnText {
+    visibility: hidden;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- DELETE MODAL ---------- */
+.delete-modal-container {
+    max-width: 420px;
+    text-align: center;
+    padding: 2.5rem 2rem 2rem;
+}
+
+.delete-modal-icon-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+}
+
+.delete-modal-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(239, 68, 68, 0.12);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e11d48;
+}
+
+.delete-modal-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.delete-modal-content {
+    margin-bottom: 1.8rem;
+}
+
+.delete-modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin: 0 0 0.5rem 0;
+}
+
+.delete-modal-message {
+    color: var(--text-soft);
+    font-weight: 500;
+    margin: 0 0 0.3rem 0;
+}
+
+.delete-modal-warning {
+    color: #e11d48;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.delete-modal-actions {
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-delete {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #e11d48, #be123c);
+    border: none;
+    padding: 0.9rem 2rem;
+    border-radius: 40px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(225, 29, 72, 0.3);
+    transition: all var(--schedules-transition);
+}
+
+.btn-delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(225, 29, 72, 0.4);
+}
+
+.btn-delete-icon {
+    width: 18px;
+    height: 18px;
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    body {
+        display: block !important;
+    }
+
+    .topbar {
+        margin-left: 1rem !important;
+        margin-right: 1rem !important;
+        width: auto !important;
+    }
+
+    #mainWrapper {
+        padding-left: 0;
+        padding-right: 0;
+        overflow-x: clip;
+        overflow-y: visible !important;
+        height: auto !important;
+    }
+
+    .content {
+        padding: 1rem 1rem 1.5rem 1rem;
+        overflow: visible;
+        overflow-x: clip;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-bar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1rem;
+    }
+
+    .action-bar-left {
+        flex-direction: column;
+        min-width: 0;
+    }
+
+    .search-wrapper {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .filter-select {
+        width: 100%;
+    }
+
+    .action-bar-right {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .add-schedule-btn {
+        width: fit-content;
+        padding: 0.9rem 2.4rem;
+    }
+
+    .schedules-table-section {
+        padding: 1rem;
+        overflow: hidden;
+    }
+
+    .schedules-table thead {
+        display: none;
+    }
+
+    .schedules-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(108, 34, 245, 0.1);
+    }
+
+    .schedules-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.4rem 0;
+        white-space: normal;
+        word-break: break-word;
+    }
+
+    .schedules-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text-soft);
+        margin-right: 1rem;
+    }
+}
+
+/* ---------- PAGE HEADER STATS (new – matches vehicles) ---------- */
+.page-header-stats {
+    display: flex;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.header-stat {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    box-shadow: var(--shadow-card);
+    border: var(--border-subtle);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.header-stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header-stat-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+    flex-shrink: 0;
+}
+
+.header-stat-value {
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--text-dark);
+    line-height: 1;
+}
+
+.header-stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-soft);
+}
+
+/* Remove old KPI card grid – no longer needed */
+.stats-grid,
+.stat-card {
+    display: none;
+}
+
+/* Mobile responsive for the stats row */
+@media (max-width: 768px) {
+    .page-header-stats {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0.6rem;
+        padding-bottom: 0.4rem;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .page-header-stats::-webkit-scrollbar {
+        display: none;
+    }
+
+    .header-stat {
+        flex-shrink: 0;
+        padding: 0.6rem 1rem;
+    }
+
+    .header-stat-value {
+        font-size: 1.1rem;
+    }
+
+    .header-stat-label {
+        font-size: 0.72rem;
+    }
+}
+
+/* ============================================================
+   SCHEDULE MAP MODAL STYLES (NEW – Schedule → Route Map Integration)
+   ============================================================ */
+
+.schedule-map-modal-container {
+    max-width: 820px;
+    max-height: 92vh;
+    padding: 1.8rem 2rem 2rem 2rem;
+}
+
+.schedule-map-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Inner glass cards */
+.glass-panel-inner {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.schedule-details-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--primary);
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(108, 34, 245, 0.15);
+}
+
+/* Route details grid */
+.schedule-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem 1.5rem;
+}
+
+.schedule-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.schedule-detail-full {
+    grid-column: 1 / -1;
+}
+
+.schedule-detail-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-soft);
+}
+
+.schedule-detail-value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    word-break: break-word;
+}
+
+/* Schedule times card */
+.schedule-times-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.schedule-time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(108, 34, 245, 0.06);
+    border-radius: 16px;
+    padding: 1rem 2rem;
+    min-width: 140px;
+}
+
+.schedule-time-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-soft);
+}
+
+.schedule-time-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #2e0a8a, #6c22f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.5px;
+}
+
+.schedule-time-arrow {
+    color: var(--primary);
+    opacity: 0.6;
+    flex-shrink: 0;
+}
+
+/* Map wrapper */
+.schedule-map-wrapper {
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    min-height: 320px;
+}
+
+.schedule-map-container {
+    height: 420px;
+    width: 100%;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+/* Error state inside map wrapper */
+.schedule-map-error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+    min-height: 280px;
+    color: var(--text-soft);
+}
+
+.schedule-map-error-state svg {
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: var(--text-soft);
+}
+
+.schedule-map-error-state p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin: 0 0 0.3rem 0;
+}
+
+.schedule-map-error-state span {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-weight: 500;
+}
+
+/* Loading spinner */
+.schedule-map-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-large {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(108, 34, 245, 0.15);
+    border-top: 4px solid #6c22f5;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+/* Leaflet overrides for glassmorphism */
+.schedule-map-container .leaflet-control-zoom {
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+}
+
+.schedule-map-container .leaflet-control-zoom a {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #6c22f5 !important;
+    font-weight: 600;
+}
+
+.schedule-map-container .leaflet-control-attribution {
+    font-size: 0.7rem !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    backdrop-filter: blur(6px);
+    padding: 2px 8px !important;
+    border-radius: 8px 0 0 0 !important;
+}
+
+/* ============================================================
+   MAP MODAL RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+    .schedule-map-modal-container {
+        max-width: 95vw;
+        max-height: 95vh;
+        padding: 1.2rem 1rem 1.5rem 1rem;
+        border-radius: 24px;
+    }
+
+    .schedule-details-grid {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+    }
+
+    .schedule-detail-full {
+        grid-column: 1;
+    }
+
+    .schedule-times-row {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .schedule-time-arrow {
+        transform: rotate(90deg);
+    }
+
+    .schedule-time-block {
+        min-width: 100%;
+        padding: 0.8rem 1.5rem;
+    }
+
+    .schedule-map-container {
+        height: 300px;
+    }
+
+    .schedule-map-error-state {
+        min-height: 200px;
+        padding: 2rem 1rem;
+    }
+}

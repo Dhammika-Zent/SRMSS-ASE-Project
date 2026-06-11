@@ -1,0 +1,678 @@
+<!-- ============================================================
+     ROUTEX TRANSIT — SCHEDULE MANAGEMENT (UI ONLY)
+     ============================================================ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RouteX — Schedule Management</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <!-- Dashboard base styles (sidebar, topbar, glass system) -->
+    <link rel="stylesheet" href="../css/dashboard.css" />
+    <!-- Schedules module specific styles -->
+    <link rel="stylesheet" href="../css/schedules.css" />
+
+    <!-- Additional badge styles for new statuses -->
+    <style>
+        .status-on-time {
+            background: rgba(16, 185, 129, 0.15);
+            color: #065f46;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-delayed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #991b1b;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .col-performance span {
+            font-weight: 500;
+        }
+
+        /* Depot column and filter – hidden/visible via JS */
+        .depot-hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ==================== BACKGROUND ORBS ==================== -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar glass-panel" id="sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-text">RouteX</span>
+            <span class="logo-sub">Transit</span>
+        </div>
+        <nav class="sidebar-nav" id="sidebarNav" aria-label="Main navigation">
+            <a href="dashboard.html" class="nav-item" data-page="dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="3" width="7" height="7" rx="1.5" />
+                    <rect x="3" y="14" width="7" height="7" rx="1.5" />
+                    <rect x="14" y="14" width="7" height="7" rx="1.5" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="users.html" class="nav-item" data-page="users">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                </svg>
+                <span>Users</span>
+            </a>
+            <a href="depots.html" class="nav-item" data-page="depots">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="15" rx="2" />
+                    <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+                    <line x1="12" y1="12" x2="12" y2="12.01" />
+                    <line x1="12" y1="16" x2="12" y2="16.01" />
+                </svg>
+                <span>Depots</span>
+            </a>
+            <a href="routes.html" class="nav-item" data-page="routes">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 9 12 3 21 9" />
+                    <polyline points="3 9 3 21 9 21 9 15 15 15 15 21 21 21 21 9" />
+                </svg>
+                <span>Routes</span>
+            </a>
+            <a href="vehicles.html" class="nav-item" data-page="vehicles">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="6" width="18" height="12" rx="2" />
+                    <circle cx="5" cy="18" r="2" />
+                    <circle cx="15" cy="18" r="2" />
+                    <line x1="7" y1="6" x2="7" y2="18" />
+                    <line x1="13" y1="6" x2="13" y2="18" />
+                </svg>
+                <span>Vehicles</span>
+            </a>
+            <a href="schedules.html" class="nav-item active" data-page="schedules">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="3" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                </svg>
+                <span>Schedules</span>
+            </a>
+            <a href="fuel.html" class="nav-item" data-page="fuel">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 22V6a2 2 0 012-2h10a2 2 0 012 2v16" />
+                    <path d="M7 10h6" />
+                    <path d="M17 4l4 4v14" />
+                    <circle cx="19" cy="9" r="2" />
+                </svg>
+                <span>Fuel Logs</span>
+            </a>
+            <a href="maintenance.html" class="nav-item" data-page="maintenance">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 8v4l3 3" />
+                </svg>
+                <span>Maintenance</span>
+            </a>
+            <a href="reports.html" class="nav-item" data-page="reports">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3" />
+                    <line x1="7" y1="8" x2="17" y2="8" />
+                    <line x1="7" y1="12" x2="17" y2="12" />
+                    <line x1="7" y1="16" x2="13" y2="16" />
+                </svg>
+                <span>Reports</span>
+            </a>
+            <a href="analytics.html" class="nav-item" data-page="analytics">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="20" x2="18" y2="10" />
+                    <line x1="12" y1="20" x2="12" y2="4" />
+                    <line x1="6" y1="20" x2="6" y2="14" />
+                </svg>
+                <span>Analytics</span>
+            </a>
+            <a href="conflicts.html" class="nav-item" data-page="conflicts">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+                <span>Conflicts</span>
+            </a>
+            <a href="settings.html" class="nav-item" data-page="settings">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3" />
+                    <path
+                        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
+                </svg>
+                <span>Settings</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="logout-btn" id="sidebarLogoutBtn" aria-label="Log out">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main-wrapper" id="mainWrapper">
+        <header class="topbar glass-panel" id="topbar">
+            <div class="topbar-left">
+                <button class="icon-btn" id="menuToggle" aria-label="Toggle sidebar menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+                <span class="date-time" id="dateTimeDisplay">
+                    <svg class="date-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                    <span id="dateTimeText">Loading…</span>
+                </span>
+            </div>
+            <div class="topbar-right">
+                <div class="user-info">
+                    <span class="user-name" id="topbarUserName"></span>
+                    <span class="role-badge" id="topbarUserRole"></span>
+                </div>
+            </div>
+        </header>
+
+        <main class="content" id="schedulesContent">
+            <div class="schedules-page-header" data-aos="fade-down" data-aos-duration="600">
+                <div class="page-header-content">
+                    <div class="page-header-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="3" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                        </svg>
+                    </div>
+                    <div class="page-header-text">
+                        <h1>Schedule Management</h1>
+                        <p>Manage route schedules, driver assignments and vehicle allocations</p>
+                    </div>
+                </div>
+                <div class="page-header-stats" data-aos="fade-up" data-aos-delay="100">
+                    <div class="header-stat" id="statTotalSchedules">
+                        <svg class="header-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="3" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <span class="header-stat-value" id="kpiTotal">0</span>
+                        <span class="header-stat-label">Total</span>
+                    </div>
+                    <div class="header-stat" id="statTodayTrips">
+                        <svg class="header-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        <span class="header-stat-value" id="kpiToday">0</span>
+                        <span class="header-stat-label">Today</span>
+                    </div>
+                    <div class="header-stat" id="statActiveTrips">
+                        <svg class="header-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="6" x2="12" y2="12" />
+                            <line x1="12" y1="12" x2="16" y2="14" />
+                        </svg>
+                        <span class="header-stat-value" id="kpiActive">0</span>
+                        <span class="header-stat-label">Active</span>
+                    </div>
+                    <div class="header-stat" id="statOnTimeTrips">
+                        <svg class="header-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span class="header-stat-value" id="kpiOnTime">0</span>
+                        <span class="header-stat-label">On Time</span>
+                    </div>
+                    <div class="header-stat" id="statDelayedTrips">
+                        <svg class="header-stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                            <line x1="12" y1="12" x2="8" y2="14" />
+                        </svg>
+                        <span class="header-stat-value" id="kpiDelayed">0</span>
+                        <span class="header-stat-label">Delayed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter & Action Bar -->
+            <div class="action-bar glass-panel" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
+                <div class="action-bar-left">
+                    <div class="search-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="searchInput" class="search-input"
+                            placeholder="Search by schedule ID, driver or route…" aria-label="Search schedules"
+                            autocomplete="off" />
+                        <button class="search-clear" id="searchClear" aria-label="Clear search" type="button">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="filter-wrapper">
+                        <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+                            <option value="all">All Status</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="On Time">On Time</option>
+                            <option value="Delayed">Delayed</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="filter-wrapper date-filter-wrapper">
+                        <input type="date" id="dateFilter" class="filter-select date-input"
+                            aria-label="Filter by date" />
+                    </div>
+                    <!-- DEPOT FILTER (superadmin only) -->
+                    <div class="filter-wrapper" id="depotFilterWrapper" style="display: none;">
+                        <select id="depotFilter" class="filter-select" aria-label="Filter by depot">
+                            <option value="all">All Depots</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="action-bar-right">
+                    <button class="add-schedule-btn" id="addScheduleBtn" aria-label="Add new schedule">
+                        <svg class="add-schedule-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="16" />
+                            <line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        <span>Add Schedule</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Active Filter Tags -->
+            <div class="active-filters" id="activeFilters" data-aos="fade-up" data-aos-duration="400"
+                data-aos-delay="150"></div>
+
+            <!-- Schedule Table Section -->
+            <div class="schedules-table-section glass-panel" data-aos="fade-up" data-aos-duration="600"
+                data-aos-delay="200">
+                <div class="table-skeleton" id="tableSkeleton">
+                    <div class="skeleton-header">
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <!-- depot column skeleton (hidden) -->
+                        <div class="skeleton-cell skeleton-cell-sm depot-hidden"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                    </div>
+                    <div class="skeleton-row">
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-sm depot-hidden"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                    </div>
+                    <div class="skeleton-row">
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-lg"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-sm depot-hidden"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-sm"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                        <div class="skeleton-cell skeleton-cell-md"></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive" id="tableResponsive">
+                    <table class="schedules-table" id="schedulesTable" aria-label="Schedules list">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col-schedule-id">Schedule ID</th>
+                                <th scope="col" class="col-route">Route</th>
+                                <th scope="col" class="col-driver">Driver</th>
+                                <th scope="col" class="col-vehicle">Vehicle</th>
+                                <th scope="col" class="col-depot depot-hidden" id="depotColumnHeader">Depot</th>
+                                <th scope="col" class="col-date">Date</th>
+                                <th scope="col" class="col-departure">Planned Departure</th>
+                                <th scope="col" class="col-actual-departure">Actual Departure</th>
+                                <th scope="col" class="col-arrival">Planned Arrival</th>
+                                <th scope="col" class="col-actual-arrival">Actual Arrival</th>
+                                <th scope="col" class="col-performance">Performance</th>
+                                <th scope="col" class="col-status">Status</th>
+                                <th scope="col" class="col-actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedulesTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="3" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                            <line x1="2" y1="2" x2="22" y2="22" />
+                        </svg>
+                    </div>
+                    <h3>No schedules found</h3>
+                    <p>Try adjusting your search or filters to find what you're looking for.</p>
+                    <button class="empty-state-btn" id="emptyStateClearBtn">Clear Filters</button>
+                </div>
+
+                <div class="results-info" id="resultsInfo">
+                    <span id="resultsCount">0</span> schedules found
+                </div>
+            </div>
+        </main>
+
+        <div id="footer-placeholder"></div>
+        <script>
+            fetch('../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    const placeholder = document.getElementById('footer-placeholder');
+                    if (placeholder) {
+                        placeholder.outerHTML = html;
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        const scripts = tempDiv.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = oldScript.textContent;
+                            document.body.appendChild(newScript);
+                        });
+                    }
+                });
+        </script>
+    </div>
+
+    <!-- ==================== ADD / EDIT SCHEDULE MODAL ==================== -->
+    <div class="modal-overlay" id="scheduleModalOverlay" role="dialog" aria-modal="true"
+        aria-labelledby="scheduleModalTitle">
+        <div class="modal-container glass-panel" id="scheduleModalContainer">
+            <div class="modal-header">
+                <div class="modal-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="3" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                    </svg>
+                </div>
+                <h2 class="modal-title" id="scheduleModalTitle">Add Schedule</h2>
+                <button class="modal-close-btn" id="scheduleModalCloseBtn" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form class="modal-form" id="scheduleForm" novalidate>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="scheduleId" class="form-label">Schedule ID <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="3" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                            </svg>
+                            <input type="text" id="scheduleId" class="glass-input form-input" placeholder="e.g. SCH001"
+                                required autocomplete="off" />
+                        </div>
+                        <span class="form-error" id="scheduleIdError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scheduleStatus" class="form-label">Status <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="8 12 11 15 16 9" />
+                            </svg>
+                            <select id="scheduleStatus" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select status…</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="scheduleStatusError"></span>
+                    </div>
+
+                    <!-- DEPOT SELECTOR (superadmin only) -->
+                    <div class="form-group" id="depotSelectGroup" style="display: none;">
+                        <label for="depotSelect" class="form-label">Depot <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="7" width="20" height="15" rx="2" />
+                                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
+                            </svg>
+                            <select id="depotSelect" class="glass-input form-input form-select">
+                                <option value="" disabled selected>Select depot…</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="depotSelectError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="driverSelect" class="form-label">Driver <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="4" />
+                                <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8" />
+                            </svg>
+                            <select id="driverSelect" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select driver…</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="driverSelectError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="routeSelect" class="form-label">Route <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 9 12 3 21 9" />
+                                <polyline points="3 9 3 21 9 21 9 15 15 15 15 21 21 21 21 9" />
+                            </svg>
+                            <select id="routeSelect" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select route…</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="routeSelectError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vehicleSelect" class="form-label">Vehicle <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="1" y="6" width="18" height="12" rx="2" />
+                                <circle cx="5" cy="18" r="2" />
+                                <circle cx="15" cy="18" r="2" />
+                            </svg>
+                            <select id="vehicleSelect" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select vehicle…</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="vehicleSelectError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scheduleDate" class="form-label">Schedule Date <span
+                                class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                            </svg>
+                            <input type="date" id="scheduleDate" class="glass-input form-input" required />
+                        </div>
+                        <span class="form-error" id="scheduleDateError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="departureTime" class="form-label">Departure Time <span
+                                class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg>
+                            <input type="time" id="departureTime" class="glass-input form-input" required />
+                        </div>
+                        <span class="form-error" id="departureTimeError"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="arrivalTime" class="form-label">Arrival Time <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                                <line x1="12" y1="12" x2="8" y2="14" />
+                            </svg>
+                            <input type="time" id="arrivalTime" class="glass-input form-input" required />
+                        </div>
+                        <span class="form-error" id="arrivalTimeError"></span>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="scheduleModalCancelBtn">Cancel</button>
+                    <button type="submit" class="btn-submit" id="scheduleModalSubmitBtn">
+                        <svg class="btn-submit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="16" />
+                            <line x1="8" y1="12" x2="16" y2="12" />
+                        </svg>
+                        <span id="scheduleSubmitBtnText">Save Schedule</span>
+                        <span class="btn-spinner" id="scheduleSubmitSpinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL (unchanged) -->
+    <div class="modal-overlay" id="deleteModalOverlay" role="dialog" aria-modal="true"
+        aria-labelledby="deleteModalTitle">
+        <div class="modal-container delete-modal-container glass-panel" id="deleteModalContainer">
+            <div class="delete-modal-icon-wrapper">
+                <div class="delete-modal-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
+                </div>
+            </div>
+            <div class="delete-modal-content">
+                <h2 class="delete-modal-title" id="deleteModalTitle">Delete Schedule</h2>
+                <p class="delete-modal-message">Are you sure you want to delete this schedule?</p>
+                <p class="delete-modal-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions delete-modal-actions">
+                <button type="button" class="btn-cancel" id="deleteModalCancelBtn">Cancel</button>
+                <button type="button" class="btn-delete" id="deleteModalConfirmBtn">
+                    <svg class="btn-delete-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                    </svg>
+                    <span>Delete</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script type="module" src="../js/schedules.js"></script>
+</body>
+
+</html>

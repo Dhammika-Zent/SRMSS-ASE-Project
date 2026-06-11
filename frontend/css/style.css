@@ -1,0 +1,401 @@
+/* ============================================================
+   ROUTEX TRANSIT — LOGIN PAGE (100% WATER GLASS STYLE)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+/* ---------- RESET & BASE ---------- */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f0f2f7;
+    /* Light cool grey so glass is visible */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 2rem;
+    /* prevent touching screen edges */
+}
+
+/* ---------- BACKGROUND ORBS FOR GLASS REFRACTION ---------- */
+/* Using the existing HTML orbs to provide color behind the 100% glass card */
+.bg-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    /* Massive blur for glassy transparent water background */
+    opacity: 0.55;
+    /* Higher transparency */
+    z-index: 0;
+    pointer-events: none;
+}
+
+.orb-1 {
+    width: 450px;
+    height: 450px;
+    background: linear-gradient(135deg, #6c22f5, #4220e6);
+    top: -150px;
+    right: -100px;
+    animation: floatOrb1 20s ease-in-out infinite alternate;
+}
+
+.orb-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #8b3cfa, #5125ed);
+    bottom: -150px;
+    left: -100px;
+    animation: floatOrb2 22s ease-in-out infinite alternate;
+}
+
+.orb-3 {
+    display: none;
+    /* Hide the third orb to keep it clean like the image */
+}
+
+@keyframes floatOrb1 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(-30px, 50px) scale(1.1);
+    }
+}
+
+@keyframes floatOrb2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(40px, -40px) scale(1.05);
+    }
+}
+
+/* ---------- MAIN CARD (100% WATER GLASS) ---------- */
+.glass-card {
+    position: relative;
+    z-index: 1;
+    /* 100% transparent background for real glass feel */
+    background: transparent;
+    backdrop-filter: blur(70px) saturate(220%);
+    -webkit-backdrop-filter: blur(70px) saturate(220%);
+    border-radius: 40px;
+    width: 100%;
+    max-width: 380px;
+    padding: 50px 30px;
+
+    /* No borders! Depth relies exclusively on shadow effects */
+    border: none;
+
+    /* Intense depth shadows to mimic a 3D water droplet edge */
+    box-shadow:
+        30px 40px 70px rgba(0, 0, 0, 0.15),
+        -20px -20px 60px rgba(255, 255, 255, 0.9),
+        inset 5px 5px 15px rgba(255, 255, 255, 0.7),
+        inset -5px -5px 15px rgba(0, 0, 0, 0.05),
+        inset 0 0 50px rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(255, 255, 255, 0.4);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transform: perspective(1000px) translateZ(0);
+}
+
+/* Hide the old blob pseudo-elements to use background orbs instead for true glass refraction */
+.glass-card::before,
+.glass-card::after {
+    display: none;
+}
+
+/* ---------- LOGO & TYPOGRAPHY ---------- */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 2.5rem;
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+    filter: drop-shadow(0 4px 10px rgba(108, 34, 245, 0.3));
+}
+
+.logo-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #4f7cff, #818cf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.6px;
+    filter: none;
+    /* Remove any previous heavy shadow on text */
+}
+
+/* Hide "Welcome Back" title and subtitle as requested */
+.card-title,
+.card-subtitle {
+    display: none;
+}
+
+/* ---------- FORM ---------- */
+.login-form {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+
+.input-label {
+    display: none;
+    /* Image has no labels above inputs */
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Neumorphic / Extreme Inner Depth inputs */
+.glass-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-radius: 30px;
+    padding: 1.15rem 1.2rem 1.15rem 3.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    font-family: 'Outfit', sans-serif;
+    /* Super extreme INNER shadow for massive 3D depth hole effect */
+    box-shadow:
+        inset 10px 10px 20px rgba(0, 0, 0, 0.2),
+        inset -10px -10px 20px rgba(255, 255, 255, 1),
+        0 2px 4px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.glass-input::placeholder {
+    color: #8c8c9e;
+    font-weight: 400;
+}
+
+.glass-input:focus {
+    outline: none;
+    box-shadow:
+        inset 10px 10px 20px rgba(0, 0, 0, 0.2),
+        inset -10px -10px 20px rgba(255, 255, 255, 1),
+        0 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+/* Icons in inputs */
+.input-icon {
+    position: absolute;
+    left: 1.2rem;
+    width: 20px;
+    height: 20px;
+    color: #6c22f5;
+    z-index: 2;
+}
+
+/* ---------- PASSWORD TOGGLE ---------- */
+.toggle-password {
+    position: absolute;
+    right: 1.2rem;
+    background: none;
+    border: none;
+    color: #6c22f5;
+    cursor: pointer;
+    z-index: 2;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password svg {
+    width: 18px;
+    height: 18px;
+}
+
+.eye-closed {
+    display: none;
+}
+
+.toggle-password.show .eye-open {
+    display: none;
+}
+
+.toggle-password.show .eye-closed {
+    display: block;
+}
+
+/* ---------- OPTIONS ROW ---------- */
+.options-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    /* Centered like image */
+    align-items: center;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.forgot-link {
+    display: none;
+    /* Not in image */
+}
+
+.remember-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #5125ed;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.custom-checkbox {
+    display: none;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 1.5px solid #6c22f5;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.custom-checkbox:checked+.checkmark {
+    background: #6c22f5;
+    box-shadow: none;
+}
+
+.custom-checkbox:checked+.checkmark::after {
+    content: "✓";
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ---------- ERROR MESSAGE ---------- */
+.error-message {
+    position: relative;
+    z-index: 1;
+    background: #fff1f2;
+    color: #e11d48;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    display: none;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(225, 29, 72, 0.1);
+}
+
+.error-message.visible {
+    display: block;
+}
+
+/* ---------- LOGIN BUTTON ---------- */
+.login-button {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(90deg, #6c22f5, #4220e6);
+    border: none;
+    border-radius: 30px;
+    padding: 1.2rem;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(108, 34, 245, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(108, 34, 245, 0.5);
+}
+
+.login-button:active {
+    transform: scale(0.98);
+}
+
+.btn-spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    position: absolute;
+}
+
+.login-button.loading .btn-text {
+    visibility: hidden;
+}
+
+.login-button.loading .btn-spinner {
+    display: block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---------- FOOTER ---------- */
+.card-footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #5125ed;
+    margin-top: 2rem;
+    font-weight: 500;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 500px) {
+    body {
+        padding: 1rem;
+    }
+
+    .glass-card {
+        padding: 40px 25px;
+        border-radius: 30px;
+    }
+}

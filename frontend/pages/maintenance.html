@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RouteX — Fuel Management</title>
+    <title>RouteX — Maintenance Management</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,14 +16,12 @@
 
     <!-- Existing Dashboard Styles (sidebar, topbar, glass system) -->
     <link rel="stylesheet" href="../css/dashboard.css">
-    <!-- Fuel Module Specific Styles -->
-    <link rel="stylesheet" href="../css/fuel.css">
+    <!-- Maintenance Module Specific Styles -->
+    <link rel="stylesheet" href="../css/maintenance.css">
 </head>
 
 <body>
-    <!-- ============================================================
-    BACKGROUND ORBS — matching the dashboard's glass refraction system
-    ============================================================ -->
+    <!-- BACKGROUND ORBS -->
     <div class="bg-orb orb-1"></div>
     <div class="bg-orb orb-2"></div>
 
@@ -92,7 +90,7 @@
                 </svg>
                 <span>Schedules</span>
             </a>
-            <a href="fuel.html" class="nav-item active" data-page="fuel">
+            <a href="fuel.html" class="nav-item" data-page="fuel">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 22V6a2 2 0 012-2h10a2 2 0 012 2v16" />
@@ -102,7 +100,7 @@
                 </svg>
                 <span>Fuel Logs</span>
             </a>
-            <a href="maintenance.html" class="nav-item" data-page="maintenance">
+            <a href="maintenance.html" class="nav-item active" data-page="maintenance">
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
                     stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="9" />
@@ -197,33 +195,31 @@
             </div>
         </header>
 
-        <!-- CONTENT AREA — Fuel Management -->
-        <main class="content" id="fuelContent">
+        <!-- CONTENT AREA — Maintenance Management -->
+        <main class="content" id="maintenanceContent">
 
             <!-- PAGE HEADER with KPI cards -->
-            <div class="fuel-page-header" data-aos="fade-down" data-aos-duration="600">
+            <div class="maintenance-page-header" data-aos="fade-down" data-aos-duration="600">
                 <div class="page-header-content">
                     <div class="page-header-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 22V6a2 2 0 012-2h10a2 2 0 012 2v16" />
-                            <path d="M7 10h6" />
-                            <path d="M17 4l4 4v14" />
-                            <circle cx="19" cy="9" r="2" />
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                         </svg>
                     </div>
                     <div class="page-header-text">
-                        <h1>Fuel Management</h1>
-                        <p>Monitor fuel consumption, costs & mileage across your fleet</p>
+                        <h1>Maintenance Management</h1>
+                        <p>Track services, repairs & costs across your fleet</p>
                     </div>
                 </div>
                 <!-- KPI Cards populated by JS -->
-                <div class="page-header-stats" id="fuelKpiCards">
+                <div class="page-header-stats" id="maintenanceKpiCards">
                     <!-- Dynamic KPIs -->
                 </div>
             </div>
 
-            <!-- ACTION BAR -->
+            <!-- ACTION BAR with new filters -->
             <div class="action-bar glass-panel" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
                 <div class="action-bar-left">
                     <div class="search-wrapper">
@@ -233,7 +229,7 @@
                             <line x1="21" y1="21" x2="16.65" y2="16.65" />
                         </svg>
                         <input type="text" id="searchInput" class="search-input"
-                            placeholder="Search by Fuel ID or Vehicle ID…" aria-label="Search fuel logs"
+                            placeholder="Search by Maintenance ID or Vehicle ID…" aria-label="Search maintenance logs"
                             autocomplete="off">
                         <button class="search-clear" id="searchClear" aria-label="Clear search" type="button">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -243,29 +239,48 @@
                             </svg>
                         </button>
                     </div>
-                    <!-- DEPOT FILTER (superadmin only) – styled exactly like vehicles page -->
-                    <div class="filter-wrapper" id="depotFilterWrapper" style="display: none;">
-                        <select id="depotFilterSelect" class="filter-select" aria-label="Filter by depot">
-                            <option value="all">All Depots</option>
-                            <!-- Populated dynamically -->
+
+                    <!-- NEW: Status Filter -->
+                    <div class="filter-wrapper">
+                        <select id="statusFilter" class="filter-select" aria-label="Filter by status">
+                            <option value="all">All Status</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
                         </select>
                     </div>
+
+                    <!-- NEW: From Date Filter -->
+                    <div class="filter-wrapper">
+                        <input type="date" id="fromDateFilter" class="filter-input" placeholder="From Date"
+                            aria-label="Filter from date">
+                    </div>
+
+                    <!-- DEPOT FILTER (Super Admin only, injected by JS) -->
+                    <div class="filter-wrapper" id="depotFilterContainer" style="display:none;"></div>
                 </div>
                 <div class="action-bar-right">
-                    <button class="add-fuel-btn" id="addFuelBtn" aria-label="Add new fuel log">
-                        <svg class="add-fuel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <button class="add-maintenance-btn" id="addMaintenanceBtn" aria-label="Add new maintenance log">
+                        <svg class="add-maintenance-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <line x1="12" y1="8" x2="12" y2="16" />
                             <line x1="8" y1="12" x2="16" y2="12" />
                         </svg>
-                        <span>Add Fuel Log</span>
+                        <span>Add Maintenance Log</span>
                     </button>
                 </div>
             </div>
 
-            <!-- FUEL LOGS TABLE SECTION -->
-            <div class="fuel-table-section glass-panel" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+            <!-- NEW: Active Filters Tags (like vehicles page) -->
+            <div class="active-filters" id="activeFilters">
+                <!-- Populated dynamically by JS -->
+            </div>
+
+            <!-- MAINTENANCE LOGS TABLE SECTION -->
+            <div class="maintenance-table-section glass-panel" data-aos="fade-up" data-aos-duration="600"
+                data-aos-delay="200">
 
                 <!-- Loading Skeleton -->
                 <div class="table-skeleton" id="tableSkeleton">
@@ -309,22 +324,23 @@
 
                 <!-- Table Container -->
                 <div class="table-responsive" id="tableResponsive">
-                    <table class="fuel-table" id="fuelTable" aria-label="Fuel logs list">
+                    <table class="maintenance-table" id="maintenanceTable" aria-label="Maintenance logs list">
                         <thead>
                             <tr>
-                                <th scope="col">Fuel ID</th>
+                                <th scope="col">Maintenance ID</th>
                                 <th scope="col">Vehicle ID</th>
-                                <th scope="col">Fuel Type</th>
-                                <th scope="col">Fuel Amount</th>
-                                <th scope="col">Fuel Cost</th>
-                                <th scope="col">Mileage Before</th>
-                                <th scope="col">Odometer Reading</th>
-                                <th scope="col">Fuel Date</th>
+                                <th scope="col">Depot</th>
+                                <th scope="col">Maintenance Type</th>
+                                <th scope="col">Service Date</th>
+                                <th scope="col">Vehicle Mileage</th>
+                                <th scope="col">Next Service Mileage</th>
+                                <th scope="col">Cost</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Created By</th>
                                 <th scope="col">Actions</th>
                             </tr>
                         </thead>
-                        <tbody id="fuelTableBody">
+                        <tbody id="maintenanceTableBody">
                             <!-- Populated by JS -->
                         </tbody>
                     </table>
@@ -335,20 +351,19 @@
                     <div class="empty-state-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 22V6a2 2 0 012-2h10a2 2 0 012 2v16" />
-                            <path d="M7 10h6" />
-                            <path d="M17 4l4 4v14" />
-                            <circle cx="19" cy="9" r="2" />
+                            <path
+                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                             <line x1="2" y1="2" x2="22" y2="22" />
                         </svg>
                     </div>
-                    <h3>No fuel logs found</h3>
-                    <p>Try adjusting your search or add a new fuel log to get started.</p>
+                    <h3>No maintenance logs found</h3>
+                    <p>Try adjusting your search or filters to find what you're looking for.</p>
+                    <button class="empty-state-btn" id="emptyStateClearBtn">Clear Filters</button>
                 </div>
 
                 <!-- Results Count -->
                 <div class="results-info" id="resultsInfo">
-                    <span id="resultsCount">0</span> fuel logs found
+                    <span id="resultsCount">0</span> maintenance logs found
                 </div>
             </div>
 
@@ -375,23 +390,20 @@
         </main>
     </div>
 
-    <!-- ============================================================
-    ADD / EDIT FUEL LOG MODAL — glassmorphism overlay
-    ============================================================ -->
-    <div class="modal-overlay" id="fuelModalOverlay" role="dialog" aria-modal="true" aria-labelledby="fuelModalTitle">
-        <div class="modal-container glass-panel" id="fuelModalContainer">
+    <!-- ADD / EDIT MAINTENANCE MODAL -->
+    <div class="modal-overlay" id="maintenanceModalOverlay" role="dialog" aria-modal="true"
+        aria-labelledby="maintenanceModalTitle">
+        <div class="modal-container glass-panel" id="maintenanceModalContainer">
             <div class="modal-header">
                 <div class="modal-header-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                         stroke-linejoin="round">
-                        <path d="M3 22V6a2 2 0 012-2h10a2 2 0 012 2v16" />
-                        <path d="M7 10h6" />
-                        <path d="M17 4l4 4v14" />
-                        <circle cx="19" cy="9" r="2" />
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                     </svg>
                 </div>
-                <h2 class="modal-title" id="fuelModalTitle">Add Fuel Log</h2>
-                <button class="modal-close-btn" id="fuelModalCloseBtn" aria-label="Close modal">
+                <h2 class="modal-title" id="maintenanceModalTitle">Add Maintenance Log</h2>
+                <button class="modal-close-btn" id="maintenanceModalCloseBtn" aria-label="Close modal">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18" />
@@ -401,11 +413,12 @@
             </div>
 
             <!-- Modal Body — Form -->
-            <form class="modal-form" id="fuelForm" novalidate>
+            <form class="modal-form" id="maintenanceForm" novalidate>
                 <div class="form-grid">
-                    <!-- Fuel ID -->
+                    <!-- Maintenance ID -->
                     <div class="form-group">
-                        <label for="fuelId" class="form-label">Fuel ID <span class="required">*</span></label>
+                        <label for="maintenanceId" class="form-label">Maintenance ID <span
+                                class="required">*</span></label>
                         <div class="form-input-wrapper">
                             <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -413,10 +426,10 @@
                                 <line x1="8" y1="2" x2="8" y2="6" />
                                 <line x1="16" y1="2" x2="16" y2="6" />
                             </svg>
-                            <input type="text" id="fuelId" class="glass-input form-input" placeholder="e.g. FL001"
-                                required autocomplete="off">
+                            <input type="text" id="maintenanceId" class="glass-input form-input"
+                                placeholder="e.g. MT001" required autocomplete="off">
                         </div>
-                        <span class="form-error" id="fuelIdError"></span>
+                        <span class="form-error" id="maintenanceIdError"></span>
                     </div>
 
                     <!-- Vehicle -->
@@ -437,76 +450,48 @@
                         <span class="form-error" id="vehicleIdSelectError"></span>
                     </div>
 
-                    <!-- Depot (readonly, auto‑filled from vehicle) -->
-                    <div class="form-group">
+                    <!-- Depot (auto-populated, read-only) -->
+                    <div class="form-group" id="depotFormGroup" style="display:none;">
                         <label for="depotField" class="form-label">Depot</label>
                         <div class="form-input-wrapper">
                             <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="2" y="7" width="20" height="15" rx="2" />
                                 <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" />
-                                <line x1="12" y1="12" x2="12" y2="12.01" />
-                                <line x1="12" y1="16" x2="12" y2="16.01" />
                             </svg>
                             <input type="text" id="depotField" class="glass-input form-input" readonly
-                                placeholder="Select a vehicle" tabindex="-1">
+                                placeholder="Auto-filled from vehicle">
                         </div>
                     </div>
 
-                    <!-- Fuel Type -->
+                    <!-- Maintenance Type -->
                     <div class="form-group">
-                        <label for="fuelType" class="form-label">Fuel Type <span class="required">*</span></label>
-                        <div class="form-input-wrapper">
-                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 4l4 4v14" />
-                                <circle cx="19" cy="9" r="2" />
-                            </svg>
-                            <select id="fuelType" class="glass-input form-input form-select" required>
-                                <option value="" disabled selected>Select fuel type…</option>
-                                <option value="Petrol">Petrol</option>
-                                <option value="Diesel">Diesel</option>
-                                <option value="CNG">CNG</option>
-                                <option value="Electric">Electric</option>
-                            </select>
-                        </div>
-                        <span class="form-error" id="fuelTypeError"></span>
-                    </div>
-
-                    <!-- Fuel Amount -->
-                    <div class="form-group">
-                        <label for="fuelAmount" class="form-label">Fuel Amount (L) <span
+                        <label for="maintenanceType" class="form-label">Maintenance Type <span
                                 class="required">*</span></label>
                         <div class="form-input-wrapper">
                             <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="3" y1="12" x2="21" y2="12" />
-                                <polyline points="8 6 3 12 8 18" />
+                                <path
+                                    d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                             </svg>
-                            <input type="number" id="fuelAmount" class="glass-input form-input" placeholder="e.g. 45.5"
-                                required min="0" step="0.01" autocomplete="off">
+                            <select id="maintenanceType" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select type…</option>
+                                <option value="Engine">Engine</option>
+                                <option value="Oil Change">Oil Change</option>
+                                <option value="Brake Service">Brake Service</option>
+                                <option value="Tire Replacement">Tire Replacement</option>
+                                <option value="General Service">General Service</option>
+                                <option value="AC Service">AC Service</option>
+                                <option value="Transmission">Transmission</option>
+                                <option value="Other">Other</option>
+                            </select>
                         </div>
-                        <span class="form-error" id="fuelAmountError"></span>
+                        <span class="form-error" id="maintenanceTypeError"></span>
                     </div>
 
-                    <!-- Fuel Cost -->
+                    <!-- Service Date -->
                     <div class="form-group">
-                        <label for="fuelCost" class="form-label">Fuel Cost ($) <span class="required">*</span></label>
-                        <div class="form-input-wrapper">
-                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="1" x2="12" y2="23" />
-                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-                            </svg>
-                            <input type="number" id="fuelCost" class="glass-input form-input" placeholder="e.g. 67.50"
-                                required min="0" step="0.01" autocomplete="off">
-                        </div>
-                        <span class="form-error" id="fuelCostError"></span>
-                    </div>
-
-                    <!-- Fuel Date -->
-                    <div class="form-group">
-                        <label for="fuelDate" class="form-label">Fuel Date <span class="required">*</span></label>
+                        <label for="serviceDate" class="form-label">Service Date <span class="required">*</span></label>
                         <div class="form-input-wrapper">
                             <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -515,26 +500,92 @@
                                 <line x1="8" y1="2" x2="8" y2="6" />
                                 <line x1="3" y1="10" x2="21" y2="10" />
                             </svg>
-                            <input type="date" id="fuelDate" class="glass-input form-input" required>
+                            <input type="date" id="serviceDate" class="glass-input form-input" required>
                         </div>
-                        <span class="form-error" id="fuelDateError"></span>
+                        <span class="form-error" id="serviceDateError"></span>
                     </div>
 
-                    <!-- Odometer Reading -->
+                    <!-- Vehicle Mileage -->
                     <div class="form-group">
-                        <label for="odometerReading" class="form-label">Odometer Reading <span
+                        <label for="vehicleMileage" class="form-label">Vehicle Mileage <span
                                 class="required">*</span></label>
                         <div class="form-input-wrapper">
                             <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="3" y1="12" x2="21" y2="12" />
                                 <polyline points="8 6 3 12 8 18" />
+                            </svg>
+                            <input type="number" id="vehicleMileage" class="glass-input form-input"
+                                placeholder="Auto-filled from vehicle" required min="0" step="1" autocomplete="off">
+                        </div>
+                        <span class="form-error" id="vehicleMileageError"></span>
+                    </div>
+
+                    <!-- Next Service Mileage -->
+                    <div class="form-group">
+                        <label for="nextServiceMileage" class="form-label">Next Service Mileage <span
+                                class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="3" y1="12" x2="21" y2="12" />
                                 <polyline points="16 6 21 12 16 18" />
                             </svg>
-                            <input type="number" id="odometerReading" class="glass-input form-input"
-                                placeholder="e.g. 120450" required min="0" step="1" autocomplete="off">
+                            <input type="number" id="nextServiceMileage" class="glass-input form-input"
+                                placeholder="e.g. 25000" required min="0" step="1" autocomplete="off">
                         </div>
-                        <span class="form-error" id="odometerReadingError"></span>
+                        <span class="form-error" id="nextServiceMileageError"></span>
+                    </div>
+
+                    <!-- Cost (LKR) -->
+                    <div class="form-group">
+                        <label for="cost" class="form-label">Cost (LKR) <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="1" x2="12" y2="23" />
+                                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg>
+                            <input type="number" id="cost" class="glass-input form-input" placeholder="e.g. 15000"
+                                required min="0" step="0.01" autocomplete="off">
+                        </div>
+                        <span class="form-error" id="costError"></span>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="form-group">
+                        <label for="status" class="form-label">Status <span class="required">*</span></label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                            <select id="status" class="glass-input form-input form-select" required>
+                                <option value="" disabled selected>Select status…</option>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <span class="form-error" id="statusError"></span>
+                    </div>
+
+                    <!-- Description (full width) -->
+                    <div class="form-group form-group-full">
+                        <label for="description" class="form-label">Description</label>
+                        <div class="form-input-wrapper">
+                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg>
+                            <textarea id="description" class="glass-input form-input form-textarea" rows="3"
+                                placeholder="Describe the maintenance work performed…"></textarea>
+                        </div>
                     </div>
 
                     <!-- Remarks (full width) -->
@@ -549,48 +600,33 @@
                                 <line x1="16" y1="17" x2="8" y2="17" />
                             </svg>
                             <textarea id="remarks" class="glass-input form-input form-textarea" rows="2"
-                                placeholder="Any additional notes…"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Auto Mileage Before (readonly) -->
-                    <div class="form-group">
-                        <label for="mileageBefore" class="form-label">Vehicle Mileage Before</label>
-                        <div class="form-input-wrapper">
-                            <svg class="form-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="3" y1="12" x2="21" y2="12" />
-                            </svg>
-                            <input type="text" id="mileageBefore" class="glass-input form-input" readonly value="—"
-                                tabindex="-1">
+                                placeholder="Additional notes…"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- Form Actions -->
                 <div class="modal-actions">
-                    <button type="button" class="btn-cancel" id="fuelModalCancelBtn">Cancel</button>
-                    <button type="submit" class="btn-submit" id="fuelModalSubmitBtn">
+                    <button type="button" class="btn-cancel" id="maintenanceModalCancelBtn">Cancel</button>
+                    <button type="submit" class="btn-submit" id="maintenanceModalSubmitBtn">
                         <svg class="btn-submit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="10" />
                             <line x1="12" y1="8" x2="12" y2="16" />
                             <line x1="8" y1="12" x2="16" y2="12" />
                         </svg>
-                        <span id="fuelSubmitBtnText">Save Fuel Log</span>
-                        <span class="btn-spinner" id="fuelSubmitSpinner"></span>
+                        <span id="maintenanceSubmitBtnText">Save Maintenance Log</span>
+                        <span class="btn-spinner" id="maintenanceSubmitSpinner"></span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- ============================================================
-    VIEW FUEL LOG MODAL (readonly)
-    ============================================================ -->
-    <div class="modal-overlay" id="viewFuelModalOverlay" role="dialog" aria-modal="true"
-        aria-labelledby="viewFuelModalTitle">
-        <div class="modal-container glass-panel" id="viewFuelModalContainer">
+    <!-- VIEW MAINTENANCE LOG MODAL -->
+    <div class="modal-overlay" id="viewMaintenanceModalOverlay" role="dialog" aria-modal="true"
+        aria-labelledby="viewMaintenanceModalTitle">
+        <div class="modal-container glass-panel" id="viewMaintenanceModalContainer">
             <div class="modal-header">
                 <div class="modal-header-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
@@ -599,8 +635,8 @@
                         <circle cx="12" cy="12" r="3" />
                     </svg>
                 </div>
-                <h2 class="modal-title" id="viewFuelModalTitle">Fuel Log Details</h2>
-                <button class="modal-close-btn" id="viewFuelModalCloseBtn" aria-label="Close modal">
+                <h2 class="modal-title" id="viewMaintenanceModalTitle">Maintenance Log Details</h2>
+                <button class="modal-close-btn" id="viewMaintenanceModalCloseBtn" aria-label="Close modal">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <line x1="18" y1="6" x2="6" y2="18" />
@@ -608,18 +644,16 @@
                     </svg>
                 </button>
             </div>
-            <div class="modal-body fuel-details" id="viewFuelDetails">
+            <div class="modal-body maintenance-details" id="viewMaintenanceDetails">
                 <!-- Populated dynamically -->
             </div>
             <div class="modal-actions">
-                <button type="button" class="btn-cancel" id="viewFuelModalCloseBtn2">Close</button>
+                <button type="button" class="btn-cancel" id="viewMaintenanceModalCloseBtn2">Close</button>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================
-    DELETE CONFIRMATION MODAL
-    ============================================================ -->
+    <!-- DELETE CONFIRMATION MODAL -->
     <div class="modal-overlay" id="deleteModalOverlay" role="dialog" aria-modal="true"
         aria-labelledby="deleteModalTitle">
         <div class="modal-container delete-modal-container glass-panel" id="deleteModalContainer">
@@ -634,8 +668,8 @@
                 </div>
             </div>
             <div class="delete-modal-content">
-                <h2 class="delete-modal-title" id="deleteModalTitle">Delete Fuel Log</h2>
-                <p class="delete-modal-message">Are you sure you want to delete this fuel log?</p>
+                <h2 class="delete-modal-title" id="deleteModalTitle">Delete Maintenance Log</h2>
+                <p class="delete-modal-message">Are you sure you want to delete this maintenance log?</p>
                 <p class="delete-modal-warning">This action cannot be undone.</p>
             </div>
             <div class="modal-actions delete-modal-actions">
@@ -652,12 +686,10 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    SCRIPTS
-    ============================================================ -->
+    <!-- SCRIPTS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="../js/app.js"></script>
-    <script type="module" src="../js/fuel.js"></script>
+    <script type="module" src="../js/maintenance.js"></script>
 </body>
 
 </html>

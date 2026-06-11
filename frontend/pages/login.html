@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RouteX Transit — Login</title>
+
+    <!-- AOS Animation Library (CSS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Google Fonts (Inter – clean, modern, premium) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Your custom styles (white glass theme) -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <!-- ==================== ANIMATED BACKGROUND ORBS ==================== -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+
+    <!-- ==================== MAIN LOGIN CARD ==================== -->
+    <main class="glass-card" aria-labelledby="login-heading" data-aos="fade-up" data-aos-duration="800">
+
+        <!-- ---- RouteX Logo ---- -->
+        <div class="logo-container" data-aos="fade-down" data-aos-delay="100">
+
+            <span class="logo-text">RouteX</span>
+        </div>
+
+        <!-- Heading & Subtitle -->
+        <h1 id="login-heading" class="card-title" data-aos="fade-up" data-aos-delay="150">Welcome Back</h1>
+        <p class="card-subtitle" data-aos="fade-up" data-aos-delay="200">Smart Route Management & Scheduling System</p>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="login-form" novalidate>
+
+            <!-- Email Field -->
+            <div class="input-group" data-aos="fade-up" data-aos-delay="250">
+                <label for="email" class="input-label">Email Address</label>
+                <div class="input-wrapper">
+                    <!-- envelope icon -->
+                    <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M2 5l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    <input type="email" id="email" class="glass-input" placeholder="admin@routex.com"
+                        autocomplete="email" required>
+                </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="input-group" data-aos="fade-up" data-aos-delay="300">
+                <label for="password" class="input-label">Password</label>
+                <div class="input-wrapper">
+                    <!-- lock icon -->
+                    <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5" />
+                        <path d="M7 9V6a3 3 0 016 0v3" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" />
+                    </svg>
+                    <input type="password" id="password" class="glass-input" placeholder="••••••••"
+                        autocomplete="current-password" required>
+                    <button type="button" id="togglePassword" class="toggle-password" aria-label="Show password">
+                        <svg class="eye-open" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5" />
+                            <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5" />
+                        </svg>
+                        <svg class="eye-closed" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                            <path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5" />
+                            <line x1="3" y1="3" x2="17" y2="17" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Options Row -->
+            <div class="options-row" data-aos="fade-up" data-aos-delay="350">
+                <label class="remember-label" for="rememberMe">
+                    <input type="checkbox" id="rememberMe" class="custom-checkbox" />
+                    <span class="checkmark"></span>
+                    Remember me
+                </label>
+                <a href="#" class="forgot-link" id="forgotPassword">Forgot password?</a>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" role="alert" aria-live="polite"></div>
+
+            <!-- Login Button -->
+            <button type="submit" id="loginButton" class="login-button" data-aos="fade-up" data-aos-delay="400">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+
+        </form>
+
+        <p class="card-footer" data-aos="fade-up" data-aos-delay="450">Admin-created accounts only &bull; Contact your
+            administrator</p>
+
+    </main>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <!-- AOS Library (JS) -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Global AOS initialisation (single point) -->
+    <script src="../js/app.js"></script>
+    <!-- Auth logic (Firebase, modular) -->
+    <script type="module" src="../js/auth.js"></script>
+
+</body>
+
+</html>
